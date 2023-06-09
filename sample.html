@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- <link rel="stylesheet" type="text/css" href="../lib/bootstrap.min.css" /> -->
+    <link
+    rel="stylesheet"
+    href="//fonts.googleapis.com/css?family=Roboto:300,300italic,400,700,700italic"
+    />
+    <link
+    rel="stylesheet"
+    href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css"
+    />
+    <link
+    rel="stylesheet"
+    href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+
+    <title>Benjamin Scholtens Resume</title>
+  </head>
+
+  <body>
+    <div style="max-width: 960px; margin: 0 auto;">
+      <!-- <a href="../index.html" id="logo">Your Blog Name</a> -->
+      <div style="display: flex; justify-content: center;">
+        <div style="flex: 0 0 50%; margin: 0 auto;">
+          <div style="margin-top: 2rem;" id="post"></div>
+        </div>
+      </div>
+      <div id="footer" style="margin-top: 2rem; margin-bottom: 3rem;">Copyright 2023</div>
+    </div>
+  </body>  
+
+  <script src="../lib/showdown.min.js"></script>
+
+  <!-- UPDATE NAME OF THE POST JS FILE -->
+  <script type="module">
+    fetch("posts/resume.md")
+      .then((response) => response.text())
+      .then((data) => {
+        const post = data;
+        document.getElementById("post").innerHTML =
+          new showdown.Converter().makeHtml(post);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  </script>
+</html>
