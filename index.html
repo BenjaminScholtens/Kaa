@@ -27,18 +27,12 @@
 </body>
 
 <script src="./lib/jquery.min.js"></script>
-
+<!-- <script src="./posts.js"></script> -->
 <script type="module">
-    const posts = new Map();
+    import {posts} from "./generated/posts.js"
 
     // DEFINE POSTS-PER-PAGE 
     const postsPerPage = 2;
-
-    // ADD POST HERE IN ORDER OF DISPLAY
-    posts.set("2022-04-1", {"title": "Sample Post 1", "url": "./sample.html"})
-    posts.set("2022-04-1", {"title": "Sample Post 2", "url": "./resume.html"})
-    posts.set("2022-04-1", {"title": "Sample Post 3", "url": "./resume-copy.html"})
-
 
     // DO NOT TOUCH BELOW
     $(document).ready(function() {
