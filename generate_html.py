@@ -46,5 +46,5 @@ for filename in os.listdir('posts'):
         html_content = html_template.format(filename, filename)
 
         # Write the HTML content to a new .html file
-        with open(f'/{os.path.splitext(filename)[0]}.html', 'w') as f:
+        with open(f'{os.path.splitext(filename)[0]}.html', 'w') as f:
             f.write(html_content)
