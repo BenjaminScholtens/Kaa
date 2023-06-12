@@ -36,3 +36,9 @@ python3 generate_html
 You can deploy your blog to a service like Vercel, Netlify, or Heroku.
 
 If your chosen service supports build steps, you can instruct the service to run `build.sh` or `python3 generate_html` before deploying your blog, and then you don't even need to build it! Of course, it only takes a second to build, and then you can identify any errors that might pop up, but to each their own!
+
+## Features
+
+- [x] Markdown to HTML conversion
+- [x] Automatic sitemap generation
+- [x] Easy URL configuration in `config.json` 
