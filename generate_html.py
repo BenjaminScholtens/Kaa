@@ -1,7 +1,9 @@
 import os
+import json
+import time
 
 # Define the HTML template with a placeholder for the Markdown filename
-html_template = '''
+html_template = """
 <!DOCTYPE html>
 <html>
   <head>
@@ -38,38 +40,44 @@ html_template = '''
     </script>
   </body>
 </html>
-'''
+"""
 
 import os
 import glob
 import shutil
 
 # Delete all files in 'generated' directory
-shutil.rmtree('generated', ignore_errors=True)
+shutil.rmtree("generated", ignore_errors=True)
 
 # Create 'generated' and 'generated/posts' directories
-os.makedirs('generated/posts', exist_ok=True)
+os.makedirs("generated/posts", exist_ok=True)
+
+posts = dict()
 
 # Iterate over all .md files in the 'posts' directory
-for filename in os.listdir('posts'):
-    if filename.endswith('.md'):
+for filename in os.listdir("posts"):
+    if filename.endswith(".md"):
         # Generate the HTML content
         html_content = html_template.format(filename, filename)
-
         # Write the HTML content to a new .html file in 'generated/posts' directory
-        with open(f'generated/posts/{os.path.splitext(filename)[0]}.html', 'w') as f:
+        with open(f"generated/posts/{os.path.splitext(filename)[0]}.html", "w") as f:
             f.write(html_content)
+        # Extract the title and date from the Markdown file
+        with open(f"posts/{filename}", "r") as f:
+            title = f.readline().strip().lstrip("# ")
+            created_time = time.ctime(
+                os.path.getctime(f"posts/{filename}")
+            )  # created time
+            modified_time = time.ctime(
+                os.path.getmtime(f"posts/{filename}")
+            )  # modified time
+        # Add the post metadata to the dictionary
+        posts[filename] = {
+            "title": title,
+            "created": created_time,
+            "modified": modified_time,
+        }
 
-# Get a list of all html files in 'generated/posts' directory
-html_files = glob.glob('generated/posts/*.html')
-
-# Create the posts object
-posts = {os.path.splitext(os.path.basename(file))[0]: {"title": f"Post: {os.path.splitext(os.path.basename(file))[0]}", "url": f"./{file}"} for file in html_files}
-
-# Generate the JavaScript file in 'generated' directory
-with open('generated/posts.js', 'w') as f:
-    f.write('export const posts = new Map();\n')
-    for key, value in posts.items():
-        f.write(f'posts.set("{key}", {value});\n')
-
-
+# Write the post metadata to a JSON file
+with open("generated/posts.json", "w") as f:
+    json.dump(posts, f)
