@@ -2,6 +2,8 @@ import os
 import json
 import time
 
+config = json.load(open("config.json"))
+
 # Define the HTML template with a placeholder for the Markdown filename
 html_template = """
 <!DOCTYPE html>
@@ -81,3 +83,35 @@ for filename in os.listdir("posts"):
 # Write the post metadata to a JSON file
 with open("generated/posts.json", "w") as f:
     json.dump(posts, f)
+
+# Generate an XML sitemap using the post manifest
+sitemap_template = """
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+  http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+{}
+</urlset>
+"""
+
+sitemap_url_template = """ 
+  <url>
+    <loc>{}</loc>
+    <lastmod>{}</lastmod>
+  </url>
+"""
+
+sitemap_urls = [
+    sitemap_url_template.format(
+        f"{config['base_site_url']}/posts/{os.path.splitext(filename)[0]}.html",
+        posts[filename]["modified"],
+    )
+    for filename in posts
+]
+
+sitemap_content = sitemap_template.format("\n".join(sitemap_urls))
+
+with open("sitemap.xml", "w") as f:
+    f.write(sitemap_content)
