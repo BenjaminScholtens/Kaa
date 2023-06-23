@@ -61,6 +61,7 @@ posts = dict()
 # make a copy of the folder posts/assets to 'generated/assets'
 shutil.copytree("posts/assets", "generated/assets")
 shutil.copy("style.css", "generated/style.css")
+shutil.copytree("lib", "generated/lib")
 
 # Iterate over all .md files in the 'posts' directory
 for dirpath, dirnames, filenames in os.walk("posts"):
@@ -185,7 +186,7 @@ def update_index_html():
         flags=re.IGNORECASE,
     )
 
-    # Write the updated HTML back to the file
+    # Write the updated HTML to the generated index.html file
     with open("generated/index.html", "w") as html_file:
         html_file.write(updated_html)
 
