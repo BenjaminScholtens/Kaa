@@ -53,8 +53,10 @@ shutil.rmtree("generated", ignore_errors=True)
 
 # Create 'generated' and 'generated/posts' directories
 os.makedirs("generated/posts", exist_ok=True)
-
 posts = dict()
+
+# make a copy of the folder posts/assets to 'generated/assets'
+shutil.copytree("posts/assets", "generated/assets")
 
 # Iterate over all .md files in the 'posts' directory
 for dirpath, dirnames, filenames in os.walk("posts"):
