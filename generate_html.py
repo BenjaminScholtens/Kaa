@@ -1,6 +1,8 @@
 import os
 import json
 import time
+import re
+import datetime
 
 config = json.load(open("config.json"))
 
@@ -50,6 +52,7 @@ import shutil
 
 # Delete all files in 'generated' directory
 shutil.rmtree("generated", ignore_errors=True)
+# FIXME: should 'mv' first to a .bak directory, then delete the .bak directory only after the entire script succeeds, otherwise restore the .bak directory
 
 # Create 'generated' and 'generated/posts' directories
 os.makedirs("generated/posts", exist_ok=True)
@@ -57,7 +60,6 @@ posts = dict()
 
 # make a copy of the folder posts/assets to 'generated/assets'
 shutil.copytree("posts/assets", "generated/assets")
-shutil.copy("homepage.html", "generated/index.html")
 shutil.copy("style.css", "generated/style.css")
 
 # Iterate over all .md files in the 'posts' directory
@@ -79,12 +81,20 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 "created": created_time,
                 "modified": modified_time,
             }
-            
-            # Check if file has been updated. If not, skip rest of loop iteration 
-            if os.path.exists(os.path.join("generated", dirpath, f"{os.path.splitext(filename)[0]}.html")):
-                if os.path.getmtime(os.path.join(dirpath, filename)) < os.path.getmtime(os.path.join("generated", dirpath, f"{os.path.splitext(filename)[0]}.html")):
+
+            # Check if file has been updated. If not, skip rest of loop iteration
+            if os.path.exists(
+                os.path.join(
+                    "generated", dirpath, f"{os.path.splitext(filename)[0]}.html"
+                )
+            ):
+                if os.path.getmtime(os.path.join(dirpath, filename)) < os.path.getmtime(
+                    os.path.join(
+                        "generated", dirpath, f"{os.path.splitext(filename)[0]}.html"
+                    )
+                ):
                     continue
-            
+
             # Generate the HTML content
             html_content = html_template.format_map(
                 {
@@ -138,3 +148,47 @@ sitemap_content = sitemap_template.format("\n".join(sitemap_urls))
 
 with open("generated/sitemap.xml", "w") as f:
     f.write(sitemap_content)
+
+
+# Update homepage
+def update_index_html():
+    # Load the existing HTML
+    with open("homepage.html", "r") as html_file:
+        html = html_file.read()
+
+    site_name = (
+        config["site_title"]
+        if config["site_title"]
+        else "Update site_title in config.json"
+    )
+
+    # Update the HTML with the new title
+    updated_html = re.sub(
+        r"BLOG_NAME_WILL_BE_OVERWRITTEN",
+        f"{site_name}",
+        html,
+        flags=re.IGNORECASE,
+    )
+
+    updated_html = re.sub(
+        r'<a href="index.html" id="logo">BLOG_NAME_WILL_BE_OVERWRITTEN</a>',
+        f'<a href="index.html" id="logo">{site_name}</a>',
+        updated_html,
+        flags=re.IGNORECASE,
+    )
+
+    # replace 'CURRENT_YEAR_WILL_BE_OVERWRITTEN' with current year
+    updated_html = re.sub(
+        r"CURRENT_YEAR_WILL_BE_OVERWRITTEN",
+        str(datetime.datetime.now().year),
+        updated_html,
+        flags=re.IGNORECASE,
+    )
+
+    # Write the updated HTML back to the file
+    with open("generated/index.html", "w") as html_file:
+        html_file.write(updated_html)
+
+
+# Call the function in your script
+update_index_html()

@@ -1,7 +1,7 @@
 {
     "base_site_url": "http://www.YOUR-SITE_HERE.com",
-    "site_title": "YOUR SITE TITLE HERE",
-    "site_description": "YOUR SITE DESCRIPTION HERE",
+    "site_title": "",
+    "site_description": "",
     "theme": {
         "colors": {
             "primary": "#000000",
