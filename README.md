@@ -1,3 +1,5 @@
+<img src="./posts/assets/kaa-logo.png" alt="My Image" width="400" />
+
 # Kaa
 Welcome to Kaa - a Python-based HTML blog generator! Convert your Markdown to structured HTML blogs. 
 
