@@ -57,6 +57,8 @@ posts = dict()
 
 # make a copy of the folder posts/assets to 'generated/assets'
 shutil.copytree("posts/assets", "generated/assets")
+shutil.copy("homepage.html", "generated/index.html")
+shutil.copy("style.css", "generated/style.css")
 
 # Iterate over all .md files in the 'posts' directory
 for dirpath, dirnames, filenames in os.walk("posts"):
