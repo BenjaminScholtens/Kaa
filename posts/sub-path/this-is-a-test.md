@@ -3,7 +3,7 @@
 and edited using the GitHub app!
 
 ```python
-# and here is some code added in the GitHub app
+# This is a python comment that is incorrectly converted to a h1
 
 num = 12
 print(num ** num)

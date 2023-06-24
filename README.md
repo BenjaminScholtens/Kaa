@@ -1,4 +1,4 @@
-<img src="./posts/assets/kaa-logo.png" alt="My Image" width="300" style="max-width: 100%; display: block; margin: auto;"/>
+<img src="./posts/assets/kaa-logo.png" alt="My Image" width="200" style="max-width: 100%; display: block; margin: auto;"/>
 
 # Kaa
 Welcome to Kaa - a Python-based HTML blog generator! Convert your Markdown to structured HTML blogs. 

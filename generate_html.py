@@ -3,6 +3,7 @@ import json
 import time
 import re
 import datetime
+import markdown2
 
 config = json.load(open("config.json"))
 
@@ -25,26 +26,15 @@ html_template = """
     <a href="{base_site_url}/index.html" id="logo">Your Blog Name</a>
       <div class="row">
         <div class="col-md-6 mx-auto">
-          <div class="mt-2" id="post"></div>
+          <div class="mt-2" id="post">{post}</div>
         </div>
       </div>
       <div id="footer">Copyright 2023</div>
     </div>
-    <script src="{base_site_url}/lib/showdown.min.js"></script>
-    <script type="module">
-      fetch("{base_site_url}/posts/{post_path}")
-        .then(response => response.text())
-        .then(data => {{
-          const post = data;
-          document.getElementById("post").innerHTML = new showdown.Converter().makeHtml(post);
-        }})
-        .catch(error => {{
-          console.error("Error:", error);
-        }});
-    </script>
   </body>
 </html>
 """
+
 
 import os
 import glob
@@ -69,7 +59,9 @@ for dirpath, dirnames, filenames in os.walk("posts"):
         if filename.endswith(".md"):
             # Extract the title and date from the Markdown file
             with open(os.path.join(dirpath, filename), "r") as f:
-                title = f.readline().strip().lstrip("# ")
+                markdown_content = f.read()
+                html_content = markdown2.markdown(markdown_content)
+                title = html_content.split('\n', 1)[0].strip().lstrip("<h1>").rstrip("</h1>")
                 created_time = time.ctime(
                     os.path.getctime(os.path.join(dirpath, filename))
                 )  # created time
@@ -101,7 +93,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 {
                     "base_site_url": config["base_site_url"],
                     "filename": filename,
-                    "post_path": os.path.join(dirpath, filename).replace("\\", "/"),
+                    "post": html_content,
                 }
             )
 

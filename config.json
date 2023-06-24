@@ -1,5 +1,5 @@
 {
-    "base_site_url": "http://www.YOUR-SITE_HERE.com",
+    "base_site_url": "http://127.0.0.1:8000",
     "site_title": "",
     "site_description": "",
     "theme": {
