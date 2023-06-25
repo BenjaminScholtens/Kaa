@@ -5,6 +5,10 @@ Welcome to Kaa - a Python-based HTML blog generator! Convert your Markdown to st
 
 ## Usage
 
+### Installation
+
+Install using `pip install -r requirements.txt`.
+
 ### Add a new blog post
 
 Create a new post in the `posts` directory. Call it whatever you like.
