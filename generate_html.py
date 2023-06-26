@@ -40,6 +40,7 @@ html_template = """
 import os
 import glob
 import shutil
+import subprocess
 
 # Delete all files in 'generated' directory
 shutil.rmtree("generated", ignore_errors=True)
@@ -54,10 +55,43 @@ shutil.copytree("posts/assets", "generated/assets")
 shutil.copy("style.css", "generated/style.css")
 shutil.copytree("lib", "generated/lib")
 
+
+def get_git_creation_date(file_path):
+    date_str = (
+        subprocess.check_output(
+            [
+                "git",
+                "log",
+                "--diff-filter=A",
+                "--follow",
+                "--format=%aD",
+                "-1",
+                file_path,
+            ]
+        )
+        .decode("utf-8")
+        .strip()
+    )
+
+    return date_str
+
+
+def get_git_modified_date(file_path):
+    date_str = (
+        subprocess.check_output(
+            ["git", "log", "--follow", "--format=%aD", "-1", file_path]
+        )
+        .decode("utf-8")
+        .strip()
+    )
+
+    return date_str
+
+
 # Iterate over all .md files in the 'posts' directory
 for dirpath, dirnames, filenames in os.walk("posts"):
     for filename in filenames:
-        if filename.endswith(".md"):
+        if filename.endswith(".md") and "drafts" not in dirpath:
             # Extract the title and date from the Markdown file
             with open(os.path.join(dirpath, filename), "r") as f:
                 markdown_content = f.read()
@@ -68,11 +102,11 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                     .lstrip("<h1>")
                     .rstrip("</h1>")
                 )
-                created_time = time.ctime(
-                    os.path.getctime(os.path.join(dirpath, filename))
+                created_time = get_git_creation_date(
+                    os.path.join(dirpath, filename)
                 )  # created time
-                modified_time = time.ctime(
-                    os.path.getmtime(os.path.join(dirpath, filename))
+                modified_time = get_git_modified_date(
+                    os.path.join(dirpath, filename)
                 )  # modified time
             # Add the post metadata to the dictionary
             posts[
