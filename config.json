@@ -2,6 +2,7 @@
     "base_site_url": "http://127.0.0.1:8000",
     "site_title": "",
     "site_description": "",
+    "google_search_console_site_verification": "",
     "theme": {
         "colors": {
             "primary": "#000000",
