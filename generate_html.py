@@ -223,6 +223,13 @@ def update_index_html():
         flags=re.IGNORECASE,
     )
 
+    updated_html = re.sub(
+        r"GOOGLE_SITE_VERIFICATION_WILL_BE_OVERWRITTEN",
+        f'{config["google_search_console_site_verification"]}',
+        updated_html,
+        flags=re.IGNORECASE,
+    )
+
     # replace 'CURRENT_YEAR_WILL_BE_OVERWRITTEN' with current year
     updated_html = re.sub(
         r"CURRENT_YEAR_WILL_BE_OVERWRITTEN",
