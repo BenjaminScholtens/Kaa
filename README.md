@@ -17,6 +17,10 @@ The first line of the file will be the **title** of the blog post. The **date** 
 
 The rest of the file should be the content of the blog post in Markdown format.
 
+### Add a new page
+
+You can create a file anywhere in your `posts` directory, and it will be converted to HTML and added to your blog. If you want a file to be treated as a page, with a permalink on the homepage, homepage, you can add the file name to the `pages` array in `config.json`.
+
 ## Generating the HTML with `build.sh`
 
 After cloning the repository, you can use the following command to build your blog from markdown files if you're doing this for the first time (`chmod` is necessary to allow the build script to be executed, but you only need to do this once):
