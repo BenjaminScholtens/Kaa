@@ -4,7 +4,9 @@ import time
 import re
 import datetime
 import markdown2
+from git import Repo
 
+repo = Repo(".")
 config = json.load(open("config.json"))
 current_year = str(datetime.datetime.now().year)
 
@@ -57,35 +59,23 @@ shutil.copytree("lib", "generated/lib")
 
 
 def get_git_creation_date(file_path):
-    date_str = (
-        subprocess.check_output(
-            [
-                "git",
-                "log",
-                "--diff-filter=A",
-                "--follow",
-                "--format=%aD",
-                "-1",
-                file_path,
-            ]
-        )
-        .decode("utf-8")
-        .strip()
-    )
-
-    return date_str
+    global repo
+    commits_touching_path = list(repo.iter_commits(paths=file_path))
+    if commits_touching_path:
+        # The earliest commit is the last one in the list
+        earliest_commit = commits_touching_path[-1]
+        return earliest_commit.authored_datetime.strftime("%Y-%m-%d")  # change here
+    return None
 
 
 def get_git_modified_date(file_path):
-    date_str = (
-        subprocess.check_output(
-            ["git", "log", "--follow", "--format=%aD", "-1", file_path]
-        )
-        .decode("utf-8")
-        .strip()
-    )
-
-    return date_str
+    global repo
+    commits_touching_path = list(repo.iter_commits(paths=file_path))
+    if commits_touching_path:
+        # The most recent commit is the first one in the list
+        most_recent_commit = commits_touching_path[0]
+        return most_recent_commit.authored_datetime.strftime("%Y-%m-%d")  # change here
+    return None
 
 
 # Iterate over all .md files in the 'posts' directory
@@ -147,6 +137,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                     os.path.join(dirpath, filename),
                     os.path.join(generated_dir, filename),
                 )
+
 
 # Write the post metadata to a JSON file
 with open("generated/posts.json", "w") as f:
