@@ -46,7 +46,7 @@ shutil.rmtree("generated", ignore_errors=True)
 # FIXME: should 'mv' first to a .bak directory, then delete the .bak directory only after the entire script succeeds, otherwise restore the .bak directory
 
 # Create 'generated' and 'generated/posts' directories
-os.makedirs("generated/posts", exist_ok=True)
+os.makedirs("generated", exist_ok=True)
 posts = dict()
 
 # make a copy of the folder posts/assets to 'generated/assets'
@@ -75,7 +75,9 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                     os.path.getmtime(os.path.join(dirpath, filename))
                 )  # modified time
             # Add the post metadata to the dictionary
-            posts[os.path.join(dirpath, filename).replace("\\", "/")] = {
+            posts[
+                os.path.join(dirpath, filename).replace("\\", "/").replace("posts/", "")
+            ] = {
                 "title": title,
                 "created": created_time,
                 "modified": modified_time,
@@ -105,8 +107,8 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 }
             )
 
-            # Write the HTML content to a new .html file in 'generated/posts' directory
-            generated_dir = os.path.join("generated", dirpath)
+            # Write the HTML content to a new .html file in 'generated' directory
+            generated_dir = os.path.join("generated", dirpath.replace("posts/", ""))
             os.makedirs(generated_dir, exist_ok=True)
             with open(
                 os.path.join(generated_dir, f"{os.path.splitext(filename)[0]}.html"),
@@ -146,7 +148,7 @@ sitemap_url_template = """
 
 sitemap_urls = [
     sitemap_url_template.format(
-        f"{config['base_site_url']}/{os.path.splitext(filename)[0]}.html",
+        f"{config['base_site_url']}/{os.path.splitext(filename.replace('posts/', ''))[0]}.html",
         posts[filename]["modified"],
     )
     for filename in posts
