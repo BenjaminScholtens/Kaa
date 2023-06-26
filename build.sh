@@ -24,7 +24,8 @@ if [[ $1 == "dev" ]]; then
     )
     echo "Watching markdown files for changes..."
     watchmedo shell-command \
-        --patterns="*.md" \
+        --patterns="*.md;*.html;*.css" \
+        --ignore-directories="generated/*" \
         --recursive \
         --command='bash -c "./build.sh"' \
         .
