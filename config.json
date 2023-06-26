@@ -3,6 +3,9 @@
     "site_title": "",
     "site_description": "",
     "google_search_console_site_verification": "",
+    "pages": [
+        "about"
+    ],
     "theme": {
         "colors": {
             "primary": "#000000",

@@ -23,6 +23,7 @@
       <div class="row justify-content-center mb-4">
         <div id="page-directory"></div>
       </div>
+      <div id="page-links"></div>
 
       <div id="footer">Copyright CURRENT_YEAR_WILL_BE_OVERWRITTEN
     </div>
@@ -35,19 +36,23 @@
     const postsPerPage = 10; // TODO: define this in a json config file
 
     // Load the post metadata from the JSON file
-    fetch('posts.json')
+    fetch('manifest.json')
       .then((response) => response.json())
       // posts manifest looks like this: {"sample2.md": {"title": "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css\">", "created": "Fri Jun  9 10:04:01 2023", "modified": "Fri Jun  9 10:04:01 2023"}, "sample.md": {"title": "this is a test", "created": "Fri Jun  9 10:04:01 2023", "modified": "Fri Jun  9 10:04:01 2023"}, "sample3.md": {"title": "h1", "created": "Fri Jun  9 10:04:01 2023", "modified": "Fri Jun  9 10:04:01 2023"}, "this-is-a-test.md": {"title": "this was added using github", "created": "Fri Jun  9 08:35:35 2023", "modified": "Fri Jun  9 08:35:35 2023"}, "this-is-a-test copy.md": {"title": "this was added In VS Code!", "created": "Fri Jun  9 09:13:45 2023", "modified": "Fri Jun  9 09:13:45 2023"}}
       .then((posts) => {
         // Sort the posts in reverse chronological order by modified time
-        const sortedPosts = Object.entries(posts).sort(
+        const sortedPosts = Object.entries(posts).filter((post) => !post[1].isPage).sort(
           (a, b) => new Date(b[1].modified) - new Date(a[1].modified),
         );
 
         // DO NOT TOUCH BELOW
+        // Any post that has 'isPage': true is a page not a post
+        const pages = Object.entries(posts).filter((post) => post[1].isPage);
+
         $(document).ready(function () {
           setPosts(1);
           setPageDirectory(1);
+          setPageLinks(1);
         });
 
         function setPosts(pageNumber) {
@@ -106,6 +111,19 @@
             setPosts(pageNumber);
             setPageDirectory(pageNumber);
           });
+        }
+
+        // Add the page links to the header
+        function setPageLinks(currentPage) {
+          const pageLinks = pages.map((page) => {
+          const [filename, metadata] = page;
+          return `<a class="page-link" href="${filename.replace(
+            '.md',
+            '',
+          )}">${metadata['title']}</a>`;
+        });
+        console.log({pageLinks})
+        $('#page-links').html(pageLinks.join(' | '));
         }
       });
   </script>

@@ -98,14 +98,6 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 modified_time = get_git_modified_date(
                     os.path.join(dirpath, filename)
                 )  # modified time
-            # Add the post metadata to the dictionary
-            posts[
-                os.path.join(dirpath, filename).replace("\\", "/").replace("posts/", "")
-            ] = {
-                "title": title,
-                "created": created_time,
-                "modified": modified_time,
-            }
 
             # Generate the HTML content
             html_content = html_template.format_map(
@@ -124,6 +116,16 @@ for dirpath, dirnames, filenames in os.walk("posts"):
             else:
                 generated_dir = os.path.join("generated", dirpath.replace("posts/", ""))
 
+            # Add the post metadata to the dictionary
+            post_path = generated_dir.replace("\\", "/").replace("generated/", "")
+            posts[post_path] = {
+                "title": title,
+                "created": created_time,
+                "modified": modified_time,
+                # check "pages" array in config
+                "isPage": post_path in config["pages"],
+            }
+
             os.makedirs(generated_dir, exist_ok=True)
             with open(
                 os.path.join(generated_dir, f"{os.path.splitext(filename)[0]}.html"),
@@ -140,7 +142,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
 
 
 # Write the post metadata to a JSON file
-with open("generated/posts.json", "w") as f:
+with open("generated/manifest.json", "w") as f:
     json.dump(posts, f)
 
 # Generate an XML sitemap using the post manifest
