@@ -117,19 +117,6 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 "modified": modified_time,
             }
 
-            # Check if file has been updated. If not, skip rest of loop iteration
-            if os.path.exists(
-                os.path.join(
-                    "generated", dirpath, f"{os.path.splitext(filename)[0]}.html"
-                )
-            ):
-                if os.path.getmtime(os.path.join(dirpath, filename)) < os.path.getmtime(
-                    os.path.join(
-                        "generated", dirpath, f"{os.path.splitext(filename)[0]}.html"
-                    )
-                ):
-                    continue
-
             # Generate the HTML content
             html_content = html_template.format_map(
                 {
@@ -142,7 +129,11 @@ for dirpath, dirnames, filenames in os.walk("posts"):
             )
 
             # Write the HTML content to a new .html file in 'generated' directory
-            generated_dir = os.path.join("generated", dirpath.replace("posts/", ""))
+            if dirpath == "posts":
+                generated_dir = "generated"
+            else:
+                generated_dir = os.path.join("generated", dirpath.replace("posts/", ""))
+
             os.makedirs(generated_dir, exist_ok=True)
             with open(
                 os.path.join(generated_dir, f"{os.path.splitext(filename)[0]}.html"),
@@ -182,7 +173,7 @@ sitemap_url_template = """
 
 sitemap_urls = [
     sitemap_url_template.format(
-        f"{config['base_site_url']}/{os.path.splitext(filename.replace('posts/', ''))[0]}.html",
+        f"{config['base_site_url']}/{os.path.splitext(filename)[0]}.html",
         posts[filename]["modified"],
     )
     for filename in posts
