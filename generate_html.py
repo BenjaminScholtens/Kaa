@@ -114,14 +114,12 @@ for dirpath, dirnames, filenames in os.walk("posts"):
             ) as f:
                 f.write(html_content)
 
-        # If the extension is a photo of PDF, copy it to the same location under 'generated/posts'
-        if filename.endswith((".jpg", ".png", ".pdf")):
-            generated_dir = os.path.join("generated", dirpath)
-            os.makedirs(generated_dir, exist_ok=True)
-            shutil.copy(
-                os.path.join(dirpath, filename),
-                os.path.join("generated", dirpath, filename),
-            )
+            # If the extension is a photo or PDF, copy it to the same location under 'generated'
+            if filename.endswith((".jpg", ".png", ".pdf")):
+                shutil.copy(
+                    os.path.join(dirpath, filename),
+                    os.path.join(generated_dir, filename),
+                )
 
 # Write the post metadata to a JSON file
 with open("generated/posts.json", "w") as f:
