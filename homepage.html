@@ -45,7 +45,6 @@
           (a, b) => new Date(b[1].modified) - new Date(a[1].modified),
         );
 
-        // DO NOT TOUCH BELOW
         // Any post that has 'isPage': true is a page not a post
         const pages = Object.entries(posts).filter((post) => post[1].isPage);
 
@@ -58,8 +57,10 @@
         function setPosts(pageNumber) {
           var postListHTML = '';
           var count = 0;
-          const truncateModifiedDate = (date) =>
-            date.toString().split(' ').slice(0, 4).join(' ');
+          const truncateModifiedDate = (date) =>{   
+            return date ? date?.toString()?.split(' ')?.slice(0, 4)?.join(' ')
+            : 'Draft'
+          }
           const minPostIndex = postsPerPage * (pageNumber - 1);
           const maxPostIndex = minPostIndex + postsPerPage - 1;
           for (
@@ -68,15 +69,18 @@
             i++
           ) {
             const [filename, metadata] = sortedPosts[i];
+            const createdDate = truncateModifiedDate(metadata['created'])
+            const modifiedDate = truncateModifiedDate(metadata['modified'])
+            const displayedDate = metadata['modified'] !== metadata['created'] ? 'Updated: ' + modifiedDate : createdDate
             postListHTML += `
                         <a class='post-link lead' href="${filename.replace(
                           '.md',
-                          '.html',
-                        )}">
+                          '',
+                        ).replace('index', '')}">
                             ${metadata['title']}
                         </a>
                         <div class="post-subtitle">
-                            ${truncateModifiedDate(metadata['modified'])}
+                            ${displayedDate}
                         </div>
                     `;
           }

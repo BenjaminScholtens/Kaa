@@ -112,7 +112,9 @@ for dirpath, dirnames, filenames in os.walk("posts"):
 
             # Write the HTML content to a new .html file in 'generated' directory
             if dirpath == "posts":
-                generated_dir = "generated"
+                generated_dir = "generated/" + "-".join(
+                    filename.replace(".md", "").split()
+                )
             else:
                 generated_dir = os.path.join("generated", dirpath.replace("posts/", ""))
 
@@ -128,7 +130,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
 
             os.makedirs(generated_dir, exist_ok=True)
             with open(
-                os.path.join(generated_dir, f"{os.path.splitext(filename)[0]}.html"),
+                os.path.join(generated_dir, "index.html"),
                 "w",
             ) as f:
                 f.write(html_content)
