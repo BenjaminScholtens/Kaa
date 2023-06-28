@@ -43,6 +43,20 @@ import os
 import glob
 import shutil
 import subprocess
+import re
+
+
+def process_tags(markdown_content):
+    # Find all words that start with a hashtag and are not at the start of a line
+    tags = re.findall(r"(?<!^)\B#\w\w+", markdown_content)
+    # Remove the hashtag from the beginning of each tag and replace the markdown tag syntax with HTML
+    tags_no_hash = [tag[1:] for tag in tags]
+    for tag in tags:
+        markdown_content = markdown_content.replace(
+            tag, f"<span class='tag'>{tag[1:]}</span>"
+        )
+    return markdown_content, tags_no_hash
+
 
 # Delete all files in 'generated' directory
 shutil.rmtree("generated", ignore_errors=True)
@@ -85,6 +99,9 @@ for dirpath, dirnames, filenames in os.walk("posts"):
             # Extract the title and date from the Markdown file
             with open(os.path.join(dirpath, filename), "r") as f:
                 markdown_content = f.read()
+                markdown_content, tags = process_tags(
+                    markdown_content
+                )  # Process tags BEFORE converting markdown so the tags don't get read as H1s
                 html_content = markdown2.markdown(markdown_content)
                 title = (
                     html_content.split("\n", 1)[0]
@@ -126,7 +143,19 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 "modified": modified_time,
                 # check "pages" array in config
                 "isPage": post_path in config["pages"],
+                "tags": tags,
             }
+
+            # Generate the HTML for the tags
+            tags_html = "".join(f"<span class='tag'>{tag}</span>" for tag in tags)
+
+            # Insert the tags HTML below the H1 tag
+            html_content = re.sub(
+                r"</h1>",
+                f"</h1>{tags_html}",
+                html_content,
+                flags=re.IGNORECASE,
+            )
 
             os.makedirs(generated_dir, exist_ok=True)
             with open(
