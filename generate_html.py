@@ -103,12 +103,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                     markdown_content
                 )  # Process tags BEFORE converting markdown so the tags don't get read as H1s
                 html_content = markdown2.markdown(markdown_content)
-                title = (
-                    html_content.split("\n", 1)[0]
-                    .strip()
-                    .lstrip("<h1>")
-                    .rstrip("</h1>")
-                )
+                title = re.search("<.*?>(.*?)</.*?>", html_content).group(1)
                 created_time = get_git_creation_date(
                     os.path.join(dirpath, filename)
                 )  # created time

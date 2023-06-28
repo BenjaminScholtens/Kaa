@@ -72,6 +72,8 @@
             const createdDate = truncateModifiedDate(metadata['created'])
             const modifiedDate = truncateModifiedDate(metadata['modified'])
             const displayedDate = metadata['modified'] !== metadata['created'] ? 'Updated: ' + modifiedDate : createdDate
+            const tags = metadata['tags'] ? metadata['tags'] : []
+            const tagSpans = tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')
             postListHTML += `
                         <a class='post-link lead' href="${filename.replace(
                           '.md',
@@ -81,6 +83,7 @@
                         </a>
                         <div class="post-subtitle">
                             ${displayedDate}
+                            ${tagSpans}
                         </div>
                     `;
           }
