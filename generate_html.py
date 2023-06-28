@@ -104,6 +104,10 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 )  # Process tags BEFORE converting markdown so the tags don't get read as H1s
                 html_content = markdown2.markdown(markdown_content)
                 title = re.search("<.*?>(.*?)</.*?>", html_content).group(1)
+                # If title is empty, use the filename, split on hyphens and capitalize each word
+                if not title:
+                    title = " ".join(filename.replace(".md", "").split("-")).title()
+
                 created_time = get_git_creation_date(
                     os.path.join(dirpath, filename)
                 )  # created time
@@ -115,7 +119,8 @@ for dirpath, dirnames, filenames in os.walk("posts"):
             html_content = html_template.format_map(
                 {
                     "base_site_url": config["base_site_url"],
-                    "site_title": config["site_title"],
+                    "site_title": config["site_title"]
+                    or "Update site_title in config.json",
                     "filename": filename,
                     "post": html_content,
                     "current_year": current_year,
