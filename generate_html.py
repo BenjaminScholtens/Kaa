@@ -102,7 +102,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 markdown_content, tags = process_tags(
                     markdown_content
                 )  # Process tags BEFORE converting markdown so the tags don't get read as H1s
-                html_content = markdown2.markdown(markdown_content)
+                html_content = markdown2.markdown(markdown_content, extras=["fenced-code-blocks"])
                 title = re.search("<.*?>(.*?)</.*?>", html_content).group(1)
                 # If title is empty, use the filename, split on hyphens and capitalize each word
                 if not title:
