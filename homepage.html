@@ -41,9 +41,10 @@
       // posts manifest looks like this: {"sample2.md": {"title": "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css\">", "created": "Fri Jun  9 10:04:01 2023", "modified": "Fri Jun  9 10:04:01 2023"}, "sample.md": {"title": "this is a test", "created": "Fri Jun  9 10:04:01 2023", "modified": "Fri Jun  9 10:04:01 2023"}, "sample3.md": {"title": "h1", "created": "Fri Jun  9 10:04:01 2023", "modified": "Fri Jun  9 10:04:01 2023"}, "this-is-a-test.md": {"title": "this was added using github", "created": "Fri Jun  9 08:35:35 2023", "modified": "Fri Jun  9 08:35:35 2023"}, "this-is-a-test copy.md": {"title": "this was added In VS Code!", "created": "Fri Jun  9 09:13:45 2023", "modified": "Fri Jun  9 09:13:45 2023"}}
       .then((posts) => {
         // Sort the posts in reverse chronological order by modified time
+        // If a post has "archived": true, it will not be included in the sorted posts
         const sortedPosts = Object.entries(posts).filter((post) => !post[1].isPage).sort(
           (a, b) => new Date(b[1].modified) - new Date(a[1].modified),
-        );
+        ).filter((post) => !post[1].archived);
 
         // Any post that has 'isPage': true is a page not a post
         const pages = Object.entries(posts).filter((post) => post[1].isPage);
