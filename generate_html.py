@@ -144,6 +144,7 @@ for dirpath, dirnames, filenames in os.walk("posts"):
                 # check "pages" array in config
                 "isPage": post_path in config["pages"],
                 "tags": tags,
+                "archived": filename.split('.')[0] in config["archived"] or filename in config["archived"],
             }
 
             # Generate the HTML for the tags
