@@ -6,6 +6,9 @@
     "pages": [
         "about"
     ],
+    "archived": [
+        "archived-post"
+    ],
     "theme": {
         "colors": {
             "primary": "#000000",
